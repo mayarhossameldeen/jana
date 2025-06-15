@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+  <body>
+    <%- include('partials/nav') %>
+    <br /><br /><br /><br />
+    <div class="container py-5" style="min-height: 60vh">
+      <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+          <div class="card shadow border-0">
+            <div class="card-body p-4">
+              <h2 class="mb-4 text-center" style="color: var(--primary-pink)">
+                Checkout
+              </h2>
+              <form id="checkout-form">
+                <div class="mb-3">
+                  <label for="name" class="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    placeholder="Enter your name"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="address" class="form-label">Address</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="address"
+                    placeholder="Enter your address"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="card" class="form-label">Card Number</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="card"
+                    placeholder="1234 5678 9012 3456"
+                    maxlength="19"
+                  />
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="expiry" class="form-label">Expiry</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="expiry"
+                      placeholder="MM/YY"
+                      maxlength="5"
+                    />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="cvc" class="form-label">CVC</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="cvc"
+                      placeholder="CVC"
+                      maxlength="4"
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  class="btn w-100"
+                  style="background: var(--primary-pink); color: #fff"
+                  id="pay-now-btn"
+                >
+                  Pay Now
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Cart Details Container -->
+        <div class="col-md-5 col-lg-4 mt-4 mt-md-0">
+          <div class="card shadow border-0">
+            <div class="card-body p-4">
+              <h4 class="mb-3" style="color: var(--primary-pink)">Your Cart</h4>
+              <ul class="list-group mb-3" id="checkout-cart-list">
+                <li
+                  class="list-group-item text-center text-muted"
+                  id="checkout-cart-empty"
+                >
+                  Your cart is empty
+                </li>
+              </ul>
+              <div
+                class="d-flex justify-content-between align-items-center mb-2"
+              >
+                <strong>Total</strong>
+                <strong
+                  style="color: var(--primary-pink)"
+                  id="checkout-cart-total"
+                  >$0.00</strong
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Cart Details Container -->
+      </div>
+    </div>
+    <%- include('partials/footer') %> <% if (user) { %>
+    <script>
+      async function fetchCheckoutCart() {
+        try {
+          const response = await fetch("/api/carts/<%= user._id %>");
+          if (!response.ok) throw new Error("Failed to fetch cart");
+          const cart = await response.json();
+          window.checkoutCart = cart; // Save cart globally for order
+          renderCheckoutCartItems(cart.items || []);
+        } catch (err) {
+          renderCheckoutCartItems([]);
+        }
+      }
+
+      function renderCheckoutCartItems(items) {
+        const cartList = document.getElementById("checkout-cart-list");
+        const cartTotal = document.getElementById("checkout-cart-total");
+        const emptyMsg = document.getElementById("checkout-cart-empty");
+        if (!items.length) {
+          cartList.innerHTML = `<li class="list-group-item text-center text-muted" id="checkout-cart-empty">Your cart is empty</li>`;
+          cartTotal.textContent = "$0.00";
+          return;
+        }
+        let subtotal = 0;
+        cartList.innerHTML = items
+          .map((item) => {
+            const price = item.product.price * item.quantity;
+            subtotal += price;
+            // Add product image
+            const imgSrc = item.product.image || "/images/placeholder.png";
+            return `<li class="list-group-item d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center">
+                <img src="${imgSrc}" alt="${
+              item.product.name
+            }" style="width:40px;height:40px;object-fit:cover;border-radius:4px;margin-right:10px;">
+                <div>
+                  <div>${item.product.name}</div>
+                  <small class="text-muted">${
+                    item.quantity
+                  } x ${item.product.price.toFixed(2)} EGP</small>
+                </div>
+              </div>
+              <span class="fw-bold">${price.toFixed(2)} EGP</span>
+            </li>`;
+          })
+          .join("");
+        cartTotal.textContent = subtotal.toFixed(2) + " EGP";
+      }
+
+      document.addEventListener("DOMContentLoaded", fetchCheckoutCart);
+      document
+        .getElementById("checkout-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const address = document.getElementById("address").value.trim();
+          const cart = window.checkoutCart;
+          if (!cart || !cart.items || cart.items.length === 0) {
+            alert("Your cart is empty.");
+            return;
+          }
+          if (!address) {
+            alert("Address is required.");
+            return;
+          }
+          // Prepare order data to match the Order schema
+          const orderData = {
+            customer: "<%= user._id %>",
+            products: cart.items.map((item) => ({
+              product: item.product._id,
+              quantity: item.quantity,
+            })),
+            total: cart.items.reduce(
+              (sum, item) => sum + item.product.price * item.quantity,
+              0
+            ),
+            address: address,
+          };
+          try {
+            const res = await fetch("/api/orders", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(orderData),
+            });
+            if (!res.ok) {
+              const err = await res.json();
+              console.log(err)
+              alert("Order failed: " + (err.error || "Unknown error"));
+              return;
+            }
+            alert("Order placed successfully!");
+            window.location.href = "/profile";
+          } catch (err) {
+            alert("Order failed: " + err.message);
+          }
+        });
+    </script>
+    <% } %>
+  </body>
+</html>

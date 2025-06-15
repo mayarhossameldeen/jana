@@ -1,0 +1,89 @@
+/* Profile Page Custom Styles */
+.profile-container {
+    background: rgba(255,255,255,0.85);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(255,105,180,0.08), 0 1.5px 8px rgba(232,180,184,0.08);
+    padding: 2.5rem 2rem 2rem 2rem;
+    margin-bottom: 3rem;
+    margin-top: 2rem;
+    transition: var(--transition);
+}
+.profile-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--primary-pink), var(--rose-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+}
+.profile-tabs .nav-link {
+    color: var(--primary-pink) !important;
+    font-weight: 600;
+    font-size: 1.15rem;
+    border: none;
+    background: none;
+    border-radius: 12px 12px 0 0;
+    transition: var(--transition);
+}
+.profile-tabs .nav-link.active {
+    background: linear-gradient(90deg, var(--soft-pink), var(--rose-gold));
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(255,105,180,0.08);
+}
+.profile-tabs .nav-link:hover {
+    background: var(--lavender);
+    color: var(--primary-pink) !important;
+}
+.profile-table {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(255,105,180,0.06);
+    overflow: hidden;
+}
+.profile-table th {
+    background: linear-gradient(90deg, var(--soft-pink), var(--rose-gold));
+    color: #fff;
+    font-weight: 600;
+    border: none;
+}
+.profile-table td {
+    border: none;
+    color: var(--text-color);
+    font-size: 1.05rem;
+}
+.profile-empty {
+    color: var(--light-text);
+    font-style: italic;
+    padding: 2rem 0;
+    text-align: center;
+}
+.profile-table tr {
+    transition: box-shadow 0.3s, background 0.3s;
+    box-shadow: 0 1px 4px rgba(255,105,180,0.04);
+    border-radius: 12px;
+    background: linear-gradient(90deg, rgba(255,182,193,0.08) 0%, rgba(232,180,184,0.06) 100%);
+}
+.profile-table tbody tr:hover {
+    background: linear-gradient(90deg, var(--soft-pink) 0%, var(--rose-gold) 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(255,105,180,0.12);
+    transform: scale(1.01);
+    cursor: pointer;
+}
+.profile-table td, .profile-table th {
+    vertical-align: middle;
+}
+.profile-table ul {
+    margin-bottom: 0;
+    padding-left: 1.2rem;
+}
+.profile-table ul li {
+    list-style: disc;
+    color: var(--primary-pink);
+    font-weight: 500;
+    font-size: 1rem;
+}
+.text-pink { color: var(--primary-pink); }
+.text-gold { color: var(--gold); font-weight: 600; }

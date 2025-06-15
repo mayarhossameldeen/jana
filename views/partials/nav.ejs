@@ -1,0 +1,358 @@
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="/">GLAM N GO</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/about-us">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/contact-us">Contact Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/products">Shop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/services">Services</a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center">
+        <% if (user != null){ %>
+        <div class="nav-icons me-3">
+          <button
+            class="btn btn-link nav-link position-relative"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasRight"
+            aria-controls="offcanvasRight"
+          >
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-badge">0</span>
+          </button>
+          <% } %>
+        </div>
+        <div class="dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            id="profileDropdown"
+            data-bs-toggle="dropdown"
+          >
+            <i class="fas fa-user"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <% if (user == null){ %>
+            <li>
+              <a
+                class="dropdown-item"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#loginModal"
+                >Login</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#signupModal"
+                >Sign Up</a
+              >
+            </li>
+            <% }else{ %>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="/profile">My Profile</a>
+            </li>
+            <li>
+              <a class="dropdown-item text-danger" href="/api/users/logout"
+                >Logout</a
+              >
+            </li>
+            <% }%>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<%- include("./cart.ejs") %>
+
+<!-- Login Modal -->
+<div
+  class="modal fade"
+  id="loginModal"
+  tabindex="-1"
+  aria-labelledby="loginModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-0 bg-light">
+        <h5 class="modal-title fw-bold" id="loginModalLabel">Welcome Back</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body px-4 py-4">
+        <form id="loginForm">
+          <div class="mb-4">
+            <label for="loginEmail" class="form-label text-muted"
+              >Email address</label
+            >
+            <input
+              type="text"
+              class="form-control form-control-lg border-0 bg-light"
+              id="loginEmail"
+              name="email"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="loginPassword" class="form-label text-muted"
+              >Password</label
+            >
+            <input
+              type="password"
+              class="form-control form-control-lg border-0 bg-light"
+              id="loginPassword"
+              name="password"
+            />
+          </div>
+          <div class="alert alert-danger d-none" id="loginError"></div>
+          <div class="alert alert-success d-none" id="loginSuccess"></div>
+          <button
+            type="submit"
+            class="btn btn-dark w-100 py-3 rounded-pill fw-bold"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+      <div class="modal-footer border-0">
+        <p class="text-center w-100 text-muted">
+          Don't have an account?
+          <a
+            href="#"
+            class="text-dark fw-bold"
+            data-bs-toggle="modal"
+            data-bs-target="#signupModal"
+            data-bs-dismiss="modal"
+            >Sign up</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Signup Modal -->
+<div
+  class="modal fade"
+  id="signupModal"
+  tabindex="-1"
+  aria-labelledby="signupModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-0 bg-light">
+        <h5 class="modal-title fw-bold" id="signupModalLabel">
+          Create Account
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body px-4 py-4">
+        <form id="signupForm">
+          <div class="mb-4">
+            <label for="signupName" class="form-label text-muted"
+              >Full Name</label
+            >
+            <input
+              type="text"
+              class="form-control form-control-lg border-0 bg-light"
+              id="signupName"
+              name="fullName"
+              required
+              minlength="3"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="signupEmail" class="form-label text-muted"
+              >Email address</label
+            >
+            <input
+              type="email"
+              class="form-control form-control-lg border-0 bg-light"
+              id="signupEmail"
+              name="email"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label for="signupPassword" class="form-label text-muted"
+              >Password</label
+            >
+            <input
+              type="password"
+              class="form-control form-control-lg border-0 bg-light"
+              id="signupPassword"
+              name="password"
+              required
+              minlength="6"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="confirmPassword" class="form-label text-muted"
+              >Confirm Password</label
+            >
+            <input
+              type="password"
+              class="form-control form-control-lg border-0 bg-light"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+            />
+          </div>
+          <div class="alert alert-danger d-none" id="signupError"></div>
+          <div class="alert alert-success d-none" id="signupSuccess"></div>
+          <button
+            type="submit"
+            class="btn btn-dark w-100 py-3 rounded-pill fw-bold"
+          >
+            Create Account
+          </button>
+        </form>
+      </div>
+      <div class="modal-footer border-0">
+        <p class="text-center w-100 text-muted">
+          Already have an account?
+          <a
+            href="#"
+            class="text-dark fw-bold"
+            data-bs-toggle="modal"
+            data-bs-target="#loginModal"
+            data-bs-dismiss="modal"
+            >Login</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const loginError = document.getElementById("loginError");
+    const signupError = document.getElementById("signupError");
+    const loginSuccess = document.getElementById("loginSuccess");
+    const signupSuccess = document.getElementById("signupSuccess");
+
+    loginForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      loginError.classList.add("d-none");
+      loginSuccess.classList.add("d-none");
+
+
+      // validatrrion
+
+      try {
+        const response = await fetch("/api/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: document.getElementById("loginEmail").value,
+            password: document.getElementById("loginPassword").value,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          loginSuccess.textContent = "Login successfulÏ Redirecting...";
+          loginSuccess.classList.remove("d-none");
+          setTimeout(() => {
+            window.location = `${data.user.role}`
+          }, 1500);
+        } else {
+          console.log(data)
+          loginError.textContent =
+            data.error || "Login failed. Please try again.";
+          loginError.classList.remove("d-none");
+        }
+      } catch (error) {
+        loginError.textContent = "An error occurred. Please try again.";
+        loginError.classList.remove("d-none");
+      }
+    });
+
+    signupForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      signupError.classList.add("d-none");
+      signupSuccess.classList.add("d-none");
+
+      const password = document.getElementById("signupPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (password !== confirmPassword) {
+        signupError.textContent = "Passwords do not match";
+        signupError.classList.remove("d-none");
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fullName: document.getElementById("signupName").value,
+            email: document.getElementById("signupEmail").value,
+            password: password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          signupSuccess.textContent =
+            "Account created successfully! Redirecting...";
+          signupSuccess.classList.remove("d-none");
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else {
+          signupError.textContent =
+            data.error || "Signup failed. Please try again.";
+          signupError.classList.remove("d-none");
+        }
+      } catch (error) {
+        signupError.textContent = "An error occurred. Please try again.";
+        signupError.classList.remove("d-none");
+      }
+    });
+  });
+</script>
