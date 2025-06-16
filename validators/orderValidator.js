@@ -15,12 +15,14 @@ export const orderValidationRules = [
   body("products.*.quantity")
     .isInt({ min: 1 }).withMessage("Quantity must be at least 1"),
 
+    
+
   body("total")
     .notEmpty().withMessage("Total is required")
     .isFloat({ min: 0 }).withMessage("Total must be a positive number"),
 
   body("address")
-    .notEmpty().withMessage("Address is required"),
+    .notEmpty().withMessage("Address Is Required"),
 
   body("status")
     .optional()
